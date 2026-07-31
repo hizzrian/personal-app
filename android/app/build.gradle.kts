@@ -30,6 +30,14 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
+
+            // R8 only runs here, so keep rules only matter here. Without them
+            // ML Kit's barcode classes are stripped and QR scanning fails in
+            // release while working fine in debug.
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
     }
 }
