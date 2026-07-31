@@ -8,9 +8,8 @@ build/
 .pub/
 pubspec.lock
 
-# FVM
-.fvm/flutter_sdk
-.fvm/fvm_config.json
+# FVM — machine-local SDK symlinks and metadata; .fvmrc pins the version
+.fvm/
 
 # IDE
 .idea/
