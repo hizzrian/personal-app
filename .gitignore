@@ -54,6 +54,9 @@ lib/generated_plugin_registrant.dart
 # Assets (design reference, not needed in build)
 stitch_personal_productivity_hub/
 
+# Golden-test diff output, written only on failure
+test/**/failures/
+
 # Misc
 *.log
 coverage/

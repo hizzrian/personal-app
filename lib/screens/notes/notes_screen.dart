@@ -10,6 +10,7 @@ import '../../utils/relative_time.dart';
 import '../../widgets/error_view.dart';
 import '../../widgets/group_card.dart';
 import '../../widgets/large_title_bar.dart';
+import '../../widgets/sliver_group_card.dart';
 import 'note_editor_screen.dart';
 
 class NotesScreen extends StatefulWidget {
@@ -189,27 +190,24 @@ class _NotesScreenState extends State<NotesScreen> {
     final rest = _filtered.where((e) => !e.note.isPinned).toList();
 
     return [
-      SliverPadding(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
-        sliver: SliverList.list(
-          children: [
-            if (pinned.isNotEmpty) ...[
-              const GroupLabel('Pinned'),
-              const SizedBox(height: 6),
-              _buildGroup(pinned),
-              const SizedBox(height: 20),
-            ],
-            if (rest.isNotEmpty) ...[
-              if (pinned.isNotEmpty) ...[
-                const GroupLabel('All Notes'),
-                const SizedBox(height: 6),
-              ],
-              _buildGroup(rest),
-            ],
-          ],
-        ),
-      ),
+      if (pinned.isNotEmpty) ...[
+        _buildLabel('Pinned'),
+        _buildGroup(pinned),
+        const SliverToBoxAdapter(child: SizedBox(height: 20)),
+      ],
+      if (rest.isNotEmpty) ...[
+        if (pinned.isNotEmpty) _buildLabel('All Notes'),
+        _buildGroup(rest),
+      ],
+      const SliverToBoxAdapter(child: SizedBox(height: 100)),
     ];
+  }
+
+  Widget _buildLabel(String text) {
+    return SliverPadding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 6),
+      sliver: SliverToBoxAdapter(child: GroupLabel(text)),
+    );
   }
 
   Widget _buildEmpty() {
@@ -232,19 +230,18 @@ class _NotesScreenState extends State<NotesScreen> {
   }
 
   Widget _buildGroup(List<_NoteEntry> entries) {
-    return GroupCard(
-      children: [
-        for (var i = 0; i < entries.length; i++) ...[
-          _NoteRow(
-            entry: entries[i],
-            onTap: () => _openEditor(note: entries[i].note),
-            onTogglePin: () => _togglePin(entries[i].note),
-            onConfirmDelete: () => _confirmDelete(entries[i].note),
-            onDeleted: () => _delete(entries[i].note),
-          ),
-          if (i != entries.length - 1) const GroupDivider(),
-        ],
-      ],
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      sliver: SliverGroupCard(
+        itemCount: entries.length,
+        itemBuilder: (context, i) => _NoteRow(
+          entry: entries[i],
+          onTap: () => _openEditor(note: entries[i].note),
+          onTogglePin: () => _togglePin(entries[i].note),
+          onConfirmDelete: () => _confirmDelete(entries[i].note),
+          onDeleted: () => _delete(entries[i].note),
+        ),
+      ),
     );
   }
 

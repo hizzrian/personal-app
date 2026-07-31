@@ -9,6 +9,7 @@ import '../../utils/app_theme.dart';
 import '../../widgets/error_view.dart';
 import '../../widgets/group_card.dart';
 import '../../widgets/large_title_bar.dart';
+import '../../widgets/sliver_group_card.dart';
 import 'job_editor_screen.dart';
 
 class JobsScreen extends StatefulWidget {
@@ -234,23 +235,19 @@ class _JobsScreenState extends State<JobsScreen> {
 
     return [
       SliverPadding(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
-        sliver: SliverToBoxAdapter(
-          child: GroupCard(
-            children: [
-              for (var i = 0; i < _visible.length; i++) ...[
-                _JobRow(
-                  job: _visible[i],
-                  onTap: () => _openEditor(job: _visible[i]),
-                  onConfirmDelete: () => _confirmDelete(),
-                  onDeleted: () => _delete(_visible[i]),
-                ),
-                if (i != _visible.length - 1) const GroupDivider(indent: 36),
-              ],
-            ],
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        sliver: SliverGroupCard(
+          itemCount: _visible.length,
+          dividerIndent: 36,
+          itemBuilder: (context, i) => _JobRow(
+            job: _visible[i],
+            onTap: () => _openEditor(job: _visible[i]),
+            onConfirmDelete: _confirmDelete,
+            onDeleted: () => _delete(_visible[i]),
           ),
         ),
       ),
+      const SliverToBoxAdapter(child: SizedBox(height: 100)),
     ];
   }
 
