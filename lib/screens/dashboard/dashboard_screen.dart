@@ -424,7 +424,7 @@ class _JobTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    final statusColor = Color(Job.statusColors[job.status] ?? 0xFF777587);
+    final statusColor = Color(job.status.colorValue);
 
     return InkWell(
       onTap: onTap,
@@ -471,7 +471,7 @@ class _JobTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(
-                Job.statusLabels[job.status] ?? job.status,
+                job.status.label,
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,

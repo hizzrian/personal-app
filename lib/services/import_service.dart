@@ -6,7 +6,7 @@ import '../core/failure.dart';
 import '../core/result.dart';
 import '../data/app_database.dart';
 import '../data/backup_repository.dart';
-import '../models/job.dart';
+import '../models/job_status.dart';
 import '../utils/note_body.dart';
 
 /// Parses an exported JSON payload and inserts it.
@@ -106,14 +106,16 @@ class ImportService {
   Map<String, Object?>? _jobRow(Map<String, Object?> row) {
     final id = _text(row['id']);
     if (id.isEmpty) return null;
-    final status = _text(row['status']);
+    final status = JobStatus.fromDb(_text(row['status']));
     return {
       'id': id,
       'company': _text(row['company']),
       'position': _text(row['position']),
       'location': _text(row['location']),
       'salary': _text(row['salary']),
-      'status': Job.statuses.contains(status) ? status : 'applied',
+      // Unknown values collapse to 'applied' rather than reaching a screen
+      // that has no label or colour for them.
+      'status': status.dbValue,
       'notes': _text(row['notes']),
       'appliedDate': _isoDate(row['appliedDate']),
       'updatedAt': _isoDate(row['updatedAt']),

@@ -5,6 +5,7 @@ import '../../core/dependencies.dart';
 import '../../core/failure.dart';
 import '../../core/result.dart';
 import '../../models/job.dart';
+import '../../models/job_status.dart';
 import '../../utils/app_theme.dart';
 import '../../widgets/error_view.dart';
 import '../../widgets/group_card.dart';
@@ -20,12 +21,11 @@ class JobsScreen extends StatefulWidget {
 }
 
 class _JobsScreenState extends State<JobsScreen> {
-  /// Sentinel for "no status filter". Kept separate from Job.statuses so the
-  /// filter value space and the domain status space don't overlap.
-  static const _filterAll = '__all__';
+  /// Null means "no status filter". Replaces a `'__all__'` sentinel that had
+  /// to share a value space with the real statuses.
+  JobStatus? _filter;
 
   List<Job> _jobs = const [];
-  String _filter = _filterAll;
   bool _isLoading = true;
   Failure? _failure;
 
@@ -60,9 +60,10 @@ class _JobsScreenState extends State<JobsScreen> {
   }
 
   void _applyFilter() {
-    _visible = _filter == _filterAll
+    final filter = _filter;
+    _visible = filter == null
         ? _jobs
-        : _jobs.where((j) => j.status == _filter).toList();
+        : _jobs.where((j) => j.status == filter).toList();
   }
 
   Future<void> _delete(Job job) async {
@@ -143,15 +144,15 @@ class _JobsScreenState extends State<JobsScreen> {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 20),
         children: [
-          _filterPill(_filterAll, 'All'),
-          for (final status in Job.statuses)
-            _filterPill(status, Job.statusLabels[status] ?? status),
+          _filterPill(null, 'All'),
+          for (final status in JobStatus.values)
+            _filterPill(status, status.label),
         ],
       ),
     );
   }
 
-  Widget _filterPill(String status, String label) {
+  Widget _filterPill(JobStatus? status, String label) {
     final colors = Theme.of(context).colorScheme;
     final isSelected = _filter == status;
 
@@ -221,7 +222,7 @@ class _JobsScreenState extends State<JobsScreen> {
                 Icon(Icons.work_off_outlined, size: 40, color: colors.outlineVariant),
                 const SizedBox(height: 10),
                 Text(
-                  _filter == _filterAll
+                  _filter == null
                       ? 'No applications yet'
                       : 'None with this status',
                   style: TextStyle(fontSize: 15, color: colors.onSurfaceVariant),
@@ -327,7 +328,7 @@ class _JobRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    final statusColor = Color(Job.statusColors[job.status] ?? 0xFF777587);
+    final statusColor = Color(job.status.colorValue);
 
     return Dismissible(
       key: ValueKey(job.id),
@@ -387,7 +388,7 @@ class _JobRow extends StatelessWidget {
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
-                  Job.statusLabels[job.status] ?? job.status,
+                  job.status.label,
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,

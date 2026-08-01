@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 import '../../core/dependencies.dart';
 import '../../core/result.dart';
 import '../../models/job.dart';
+import '../../models/job_status.dart';
 
 class JobEditorScreen extends StatefulWidget {
   final Job? job;
@@ -24,7 +25,7 @@ class _JobEditorScreenState extends State<JobEditorScreen> {
   late TextEditingController _locationController;
   late TextEditingController _salaryController;
   late TextEditingController _notesController;
-  late String _status;
+  late JobStatus _status;
   late DateTime _appliedDate;
 
   @override
@@ -35,7 +36,7 @@ class _JobEditorScreenState extends State<JobEditorScreen> {
     _locationController = TextEditingController(text: widget.job?.location ?? '');
     _salaryController = TextEditingController(text: widget.job?.salary ?? '');
     _notesController = TextEditingController(text: widget.job?.notes ?? '');
-    _status = widget.job?.status ?? 'applied';
+    _status = widget.job?.status ?? JobStatus.applied;
     _appliedDate = widget.job?.appliedDate ?? DateTime.now();
   }
 
@@ -135,7 +136,7 @@ class _JobEditorScreenState extends State<JobEditorScreen> {
             spacing: 6,
             runSpacing: 6,
             children: [
-              for (final status in Job.statuses) _statusChip(status, colors),
+              for (final status in JobStatus.values) _statusChip(status, colors),
             ],
           ),
           const SizedBox(height: 20),
@@ -162,9 +163,9 @@ class _JobEditorScreenState extends State<JobEditorScreen> {
     );
   }
 
-  Widget _statusChip(String status, ColorScheme colors) {
+  Widget _statusChip(JobStatus status, ColorScheme colors) {
     final isSelected = _status == status;
-    final statusColor = Color(Job.statusColors[status] ?? 0xFF777587);
+    final statusColor = Color(status.colorValue);
 
     return GestureDetector(
       onTap: () => setState(() => _status = status),
@@ -178,7 +179,7 @@ class _JobEditorScreenState extends State<JobEditorScreen> {
           ),
         ),
         child: Text(
-          Job.statusLabels[status] ?? status,
+          status.label,
           style: TextStyle(
             fontSize: 12,
             color: isSelected ? statusColor : colors.onSurfaceVariant,

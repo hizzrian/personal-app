@@ -1,8 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:personal_app/models/job.dart';
+import 'package:personal_app/models/job_status.dart';
 
 void main() {
-  Job jobWith(String status) => Job(
+  Job jobWith(JobStatus status) => Job(
         id: 'j1',
         company: 'Acme',
         position: 'Engineer',
@@ -13,27 +14,27 @@ void main() {
 
   group('Job.isActive', () {
     test('is true for in-progress statuses', () {
-      for (final status in ['applied', 'screening', 'interview', 'technical', 'offer']) {
-        expect(jobWith(status).isActive, isTrue, reason: status);
+      for (final status in JobStatus.values.where((s) => !s.isTerminal)) {
+        expect(jobWith(status).isActive, isTrue, reason: status.name);
       }
     });
 
     test('is false for terminal statuses', () {
-      for (final status in ['rejected', 'withdrawn', 'accepted']) {
-        expect(jobWith(status).isActive, isFalse, reason: status);
+      for (final status in JobStatus.values.where((s) => s.isTerminal)) {
+        expect(jobWith(status).isActive, isFalse, reason: status.name);
       }
     });
   });
 
   group('Job.isOffer', () {
     test('is true for offer and accepted', () {
-      expect(jobWith('offer').isOffer, isTrue);
-      expect(jobWith('accepted').isOffer, isTrue);
+      expect(jobWith(JobStatus.offer).isOffer, isTrue);
+      expect(jobWith(JobStatus.accepted).isOffer, isTrue);
     });
 
     test('is false otherwise', () {
-      for (final status in ['applied', 'screening', 'interview', 'technical', 'rejected', 'withdrawn']) {
-        expect(jobWith(status).isOffer, isFalse, reason: status);
+      for (final status in JobStatus.values.where((s) => !s.isOffer)) {
+        expect(jobWith(status).isOffer, isFalse, reason: status.name);
       }
     });
   });
@@ -54,14 +55,15 @@ void main() {
     test('reads a well-formed row', () {
       final job = Job.fromMap(validRow());
       expect(job.id, 'j1');
-      expect(job.status, 'interview');
+      expect(job.status, JobStatus.interview);
       expect(job.appliedDate, DateTime.parse('2026-01-01T00:00:00.000'));
     });
 
     test('coerces an unknown status to applied', () {
-      // Guards the UI, where statusColors/statusLabels lookups would be null.
+      // A value with no enum member must not reach a screen that would have
+      // no label or colour for it.
       final job = Job.fromMap(validRow()..['status'] = 'bogus');
-      expect(job.status, 'applied');
+      expect(job.status, JobStatus.applied);
     });
 
     test('does not throw on a malformed date', () {
@@ -85,7 +87,7 @@ void main() {
   });
 
   test('toMap round-trips through fromMap', () {
-    final original = jobWith('offer');
+    final original = jobWith(JobStatus.offer);
     final restored = Job.fromMap(original.toMap());
     expect(restored.id, original.id);
     expect(restored.status, original.status);

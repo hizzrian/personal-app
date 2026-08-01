@@ -10,6 +10,7 @@ import '../../core/result.dart';
 import '../../models/note.dart';
 import '../../utils/app_theme.dart';
 import '../../utils/note_body.dart';
+import 'save_indicator.dart';
 
 class NoteEditorScreen extends StatefulWidget {
   final Note? note;
@@ -26,7 +27,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
   late QuillController _quillController;
   late List<String> _tags;
   bool _hasChanges = false;
-  String _saveStatus = 'saved';
+  SaveIndicator _saveStatus = SaveIndicator.saved;
   Timer? _saveStatusTimer;
   final FocusNode _editorFocusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
@@ -54,11 +55,13 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
 
   void _onChanged() {
     if (!_hasChanges) setState(() => _hasChanges = true);
-    if (_saveStatus != 'saving') setState(() => _saveStatus = 'saving');
+    if (_saveStatus != SaveIndicator.saving) {
+      setState(() => _saveStatus = SaveIndicator.saving);
+    }
     // Debounce: a single timer, restarted on each edit, cancelled on dispose.
     _saveStatusTimer?.cancel();
     _saveStatusTimer = Timer(const Duration(milliseconds: 1200), () {
-      if (mounted) setState(() => _saveStatus = 'saved');
+      if (mounted) setState(() => _saveStatus = SaveIndicator.saved);
     });
   }
 
@@ -209,12 +212,12 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          _saveStatus == 'saving' ? Icons.sync : Icons.cloud_done_outlined,
+                          _saveStatus.icon,
                           size: 14, color: colors.onSurfaceVariant.withValues(alpha: 0.5),
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          _saveStatus == 'saving' ? 'Saving...' : 'Saved',
+                          _saveStatus.label,
                           style: TextStyle(fontSize: 11, color: colors.onSurfaceVariant.withValues(alpha: 0.5)),
                         ),
                       ],

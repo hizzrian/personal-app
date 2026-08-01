@@ -7,6 +7,7 @@ import 'package:personal_app/data/backup_repository.dart';
 import 'package:personal_app/data/job_repository.dart';
 import 'package:personal_app/data/note_repository.dart';
 import 'package:personal_app/data/qr_repository.dart';
+import 'package:personal_app/models/job_status.dart';
 import 'package:personal_app/services/import_service.dart';
 
 import '../support/test_database.dart';
@@ -153,7 +154,10 @@ void main() {
       }));
 
       expect(result.isOk, isTrue);
-      expect((await jobs.all()).valueOr(const []).single.status, 'applied');
+      expect(
+        (await jobs.all()).valueOr(const []).single.status,
+        JobStatus.applied,
+      );
     });
 
     test('ignores non-map entries inside a table array', () async {
