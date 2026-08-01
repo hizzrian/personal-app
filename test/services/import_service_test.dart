@@ -221,4 +221,47 @@ void main() {
     expect((await service.importFromJson(json)).valueOrNull?.total, 0);
     expect((await notes.count()).valueOr(0), 1);
   });
+
+  group('note previews', () {
+    Future<String?> importedPreview(Map<String, Object?> noteRow) async {
+      final result = await service.importFromJson(payload({
+        'notes': [noteRow],
+      }));
+      expect(result.valueOrNull?.total, 1);
+      final rows = await (await db.open()).query('notes', columns: ['previewText']);
+      return rows.single['previewText'] as String?;
+    }
+
+    test('derives the preview from an imported body', () async {
+      final body = jsonEncode([
+        {'insert': 'imported line\n'},
+      ]);
+      expect(
+        await importedPreview({
+          'id': 'n1',
+          'title': 't',
+          'body': body,
+          'createdAt': '2026-01-01T00:00:00.000',
+          'updatedAt': '2026-01-01T00:00:00.000',
+        }),
+        'imported line',
+      );
+    });
+
+    test('ignores a preview supplied by the file', () async {
+      // A hand-edited backup could claim a preview that contradicts its body.
+      // Trusting it would show the list text the note does not contain.
+      expect(
+        await importedPreview({
+          'id': 'n1',
+          'title': 't',
+          'body': 'real body',
+          'previewText': 'attacker supplied',
+          'createdAt': '2026-01-01T00:00:00.000',
+          'updatedAt': '2026-01-01T00:00:00.000',
+        }),
+        'real body',
+      );
+    });
+  });
 }

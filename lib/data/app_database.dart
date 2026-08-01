@@ -1,6 +1,9 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
 
+import '../models/db_read.dart';
+import '../utils/note_body.dart';
+
 /// Owns the SQLite connection and schema. Injected into repositories so tests
 /// can supply an in-memory database instead of a real file.
 class AppDatabase {
@@ -16,7 +19,7 @@ class AppDatabase {
 
   Database? _db;
 
-  static const schemaVersion = 3;
+  static const schemaVersion = 4;
 
   static const tableNotes = 'notes';
   static const tableJobs = 'jobs';
@@ -55,6 +58,7 @@ class AppDatabase {
       id TEXT PRIMARY KEY,
       title TEXT NOT NULL,
       body TEXT NOT NULL,
+      previewText TEXT NOT NULL DEFAULT '',
       tags TEXT NOT NULL DEFAULT '',
       color INTEGER NOT NULL DEFAULT 0,
       isPinned INTEGER NOT NULL DEFAULT 0,
@@ -104,7 +108,7 @@ class AppDatabase {
     }
   }
 
-  /// Applies each version step in order, so 1→3 runs both the v2 and v3
+  /// Applies each version step in order, so 1→4 runs the v2, v3 and v4
   /// migrations rather than skipping straight to the latest.
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     for (var v = oldVersion + 1; v <= newVersion; v++) {
@@ -115,7 +119,34 @@ class AppDatabase {
           for (final stmt in _createIndexes) {
             await db.execute(stmt);
           }
+        case 4:
+          await db.execute(
+            "ALTER TABLE $tableNotes ADD COLUMN previewText TEXT NOT NULL DEFAULT ''",
+          );
+          await _backfillPreviews(db);
       }
     }
+  }
+
+  /// Fills `previewText` for notes written before v4.
+  ///
+  /// The value comes from decoding each body's Quill Delta, which SQLite has no
+  /// way to do, so this is a one-time pass in Dart rather than a single UPDATE.
+  /// sqflite runs `onUpgrade` inside a transaction, so a failure part-way
+  /// leaves the column unadded rather than half-populated.
+  static Future<void> _backfillPreviews(Database db) async {
+    final rows = await db.query(tableNotes, columns: ['id', 'body']);
+    if (rows.isEmpty) return;
+
+    final batch = db.batch();
+    for (final row in rows) {
+      batch.update(
+        tableNotes,
+        {'previewText': NoteBody.toPreview(DbRead.string(row, 'body'))},
+        where: 'id = ?',
+        whereArgs: [DbRead.string(row, 'id')],
+      );
+    }
+    await batch.commit(noResult: true);
   }
 }

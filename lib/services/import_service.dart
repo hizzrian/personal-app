@@ -7,6 +7,7 @@ import '../core/result.dart';
 import '../data/app_database.dart';
 import '../data/backup_repository.dart';
 import '../models/job.dart';
+import '../utils/note_body.dart';
 
 /// Parses an exported JSON payload and inserts it.
 ///
@@ -85,10 +86,15 @@ class ImportService {
   Map<String, Object?>? _noteRow(Map<String, Object?> row) {
     final id = _text(row['id']);
     if (id.isEmpty) return null;
+    final body = _text(row['body']);
     return {
       'id': id,
       'title': _text(row['title']),
-      'body': _text(row['body']),
+      'body': body,
+      // Derived, never read from the file: a hand-edited backup could carry a
+      // preview that disagrees with its body, and the list would then show
+      // text the note does not contain.
+      'previewText': NoteBody.toPreview(body),
       'tags': _text(row['tags']),
       'color': _int(row['color']),
       'isPinned': _boolAsInt(row['isPinned']),

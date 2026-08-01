@@ -4,7 +4,6 @@ import '../../core/dependencies.dart';
 import '../../core/result.dart';
 import '../../models/job.dart';
 import '../../models/note.dart';
-import '../../utils/note_body.dart';
 import '../../utils/relative_time.dart';
 import '../../widgets/group_card.dart';
 import '../../widgets/large_title_bar.dart';
@@ -303,7 +302,7 @@ class _NotePreview {
   const _NotePreview({required this.note, required this.preview});
 
   factory _NotePreview.from(Note note) =>
-      _NotePreview(note: note, preview: NoteBody.toPreview(note.body));
+      _NotePreview(note: note, preview: note.previewText);
 
   final Note note;
   final String preview;

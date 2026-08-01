@@ -5,7 +5,6 @@ import '../../core/failure.dart';
 import '../../core/result.dart';
 import '../../models/note.dart';
 import '../../utils/app_theme.dart';
-import '../../utils/note_body.dart';
 import '../../utils/relative_time.dart';
 import '../../widgets/error_view.dart';
 import '../../widgets/group_card.dart';
@@ -276,7 +275,7 @@ class _NoteEntry {
   });
 
   factory _NoteEntry.from(Note note) {
-    final preview = NoteBody.toPreview(note.body);
+    final preview = note.previewText;
     return _NoteEntry(
       note: note,
       preview: preview,
