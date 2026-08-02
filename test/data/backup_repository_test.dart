@@ -149,7 +149,8 @@ void main() {
         qrCodes: const [],
       ));
 
-      final existing = unwrap(await notes.all()).firstWhere((n) => n.id == 'n1');
+      final existing =
+          unwrap(await notes.all()).firstWhere((n) => n.id == 'n1');
       // The original title survives; INSERT OR IGNORE must not clobber it.
       expect(existing.title, 'Note one');
     });

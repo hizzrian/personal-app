@@ -37,7 +37,8 @@ class SqliteNoteRepository with RepositoryGuard implements NoteRepository {
   Future<Result<List<Note>>> recent({int limit = 3}) =>
       guard('load recent notes', () async {
         final db = await _db.open();
-        final rows = await db.query(_table, orderBy: 'updatedAt DESC', limit: limit);
+        final rows =
+            await db.query(_table, orderBy: 'updatedAt DESC', limit: limit);
         return rows.map(Note.fromMap).toList();
       });
 

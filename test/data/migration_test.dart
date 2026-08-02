@@ -111,7 +111,8 @@ void main() {
     expect(await tableNames(upgraded), contains('qr_codes'));
     expect(await indexNames(upgraded), contains('idx_notes_pinned_updated'));
 
-    final preserved = await upgraded.query('notes', where: 'id = ?', whereArgs: ['legacy']);
+    final preserved =
+        await upgraded.query('notes', where: 'id = ?', whereArgs: ['legacy']);
     expect(preserved, hasLength(1));
     expect(preserved.single['title'], 'Pre-migration note');
   });
@@ -155,7 +156,8 @@ void main() {
     addTearDown(upgraded.close);
 
     expect(await indexNames(upgraded), hasLength(4));
-    expect(await tableNames(upgraded), containsAll(['notes', 'jobs', 'qr_codes']));
+    expect(
+        await tableNames(upgraded), containsAll(['notes', 'jobs', 'qr_codes']));
   });
 
   test('reopening at the current version is a no-op', () async {

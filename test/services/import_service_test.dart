@@ -232,7 +232,8 @@ void main() {
         'notes': [noteRow],
       }));
       expect(result.valueOrNull?.total, 1);
-      final rows = await (await db.open()).query('notes', columns: ['previewText']);
+      final rows =
+          await (await db.open()).query('notes', columns: ['previewText']);
       return rows.single['previewText'] as String?;
     }
 

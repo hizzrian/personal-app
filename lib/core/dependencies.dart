@@ -47,7 +47,8 @@ class Dependencies extends StatelessWidget {
     final notes = noteRepository ?? SqliteNoteRepository(db);
     final jobs = jobRepository ?? SqliteJobRepository(db);
     final qr = qrRepository ?? SqliteQrRepository(db);
-    final backup = backupRepository ?? SqliteBackupRepository(db, notes, jobs, qr);
+    final backup =
+        backupRepository ?? SqliteBackupRepository(db, notes, jobs, qr);
 
     return MultiProvider(
       providers: [

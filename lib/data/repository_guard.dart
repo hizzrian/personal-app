@@ -12,7 +12,8 @@ mixin RepositoryGuard {
     } on DatabaseException catch (e, s) {
       return Err(StorageFailure('Could not $action.', cause: _Traced(e, s)));
     } on FormatException catch (e, s) {
-      return Err(ParseFailure('Could not $action: malformed data.', cause: _Traced(e, s)));
+      return Err(ParseFailure('Could not $action: malformed data.',
+          cause: _Traced(e, s)));
     } catch (e, s) {
       return Err(StorageFailure('Could not $action.', cause: _Traced(e, s)));
     }

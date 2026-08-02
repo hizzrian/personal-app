@@ -23,7 +23,8 @@ class ExportService {
     final snapshot = await _backup.exportAll();
     if (snapshot case Err(:final failure)) return Err(failure);
 
-    final data = (snapshot as Ok<Map<String, List<Map<String, Object?>>>>).value;
+    final data =
+        (snapshot as Ok<Map<String, List<Map<String, Object?>>>>).value;
 
     File? file;
     try {
@@ -40,7 +41,8 @@ class ExportService {
 
       final json = const JsonEncoder.withIndent('  ').convert(payload);
       final dir = await getTemporaryDirectory();
-      file = File('${dir.path}/clarity_export_${_timestamp.format(DateTime.now())}.json');
+      file = File(
+          '${dir.path}/clarity_export_${_timestamp.format(DateTime.now())}.json');
       await file.writeAsString(json);
 
       await Share.shareXFiles(

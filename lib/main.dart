@@ -58,7 +58,8 @@ class _AppRoot extends StatelessWidget {
         SystemChrome.setSystemUIOverlayStyle(
           SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
-            statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+            statusBarIconBrightness:
+                isDark ? Brightness.light : Brightness.dark,
             systemNavigationBarColor:
                 isDark ? AppTheme.surfaceDark : AppTheme.surface,
             systemNavigationBarIconBrightness:

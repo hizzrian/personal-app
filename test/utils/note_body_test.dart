@@ -42,7 +42,8 @@ void main() {
 
   group('NoteBody.toPreview', () {
     test('collapses newlines into spaces', () {
-      expect(NoteBody.toPreview(delta('line one\nline two\n')), 'line one line two');
+      expect(NoteBody.toPreview(delta('line one\nline two\n')),
+          'line one line two');
     });
 
     test('trims surrounding whitespace', () {

@@ -45,7 +45,8 @@ class ImportService {
     }
 
     if (decoded is! Map<String, Object?>) {
-      return const Err(ParseFailure('Expected a JSON object at the top level.'));
+      return const Err(
+          ParseFailure('Expected a JSON object at the top level.'));
     }
 
     final data = decoded['data'];

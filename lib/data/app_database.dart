@@ -30,7 +30,8 @@ class AppDatabase {
     if (existing != null && existing.isOpen) return existing;
 
     final factory = _factory ?? databaseFactory;
-    final path = _path ?? p.join(await factory.getDatabasesPath(), 'personal_app.db');
+    final path =
+        _path ?? p.join(await factory.getDatabasesPath(), 'personal_app.db');
 
     final db = await factory.openDatabase(
       path,

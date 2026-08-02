@@ -47,7 +47,8 @@ class FakeNoteRepository implements NoteRepository {
   }
 
   @override
-  Future<void> deleteAllWithin(DatabaseExecutor executor) async => items.clear();
+  Future<void> deleteAllWithin(DatabaseExecutor executor) async =>
+      items.clear();
 }
 
 class FakeJobRepository implements JobRepository {
@@ -79,7 +80,8 @@ class FakeJobRepository implements JobRepository {
   }
 
   @override
-  Future<void> deleteAllWithin(DatabaseExecutor executor) async => items.clear();
+  Future<void> deleteAllWithin(DatabaseExecutor executor) async =>
+      items.clear();
 }
 
 class FakeQrRepository implements QrRepository {
@@ -107,7 +109,8 @@ class FakeQrRepository implements QrRepository {
   }
 
   @override
-  Future<void> deleteAllWithin(DatabaseExecutor executor) async => items.clear();
+  Future<void> deleteAllWithin(DatabaseExecutor executor) async =>
+      items.clear();
 }
 
 class FakeBackupRepository implements BackupRepository {

@@ -50,8 +50,8 @@ class SqliteBackupRepository with RepositoryGuard implements BackupRepository {
               await db.query(AppDatabase.tableNotes, orderBy: 'updatedAt DESC'),
           AppDatabase.tableJobs:
               await db.query(AppDatabase.tableJobs, orderBy: 'updatedAt DESC'),
-          AppDatabase.tableQrCodes:
-              await db.query(AppDatabase.tableQrCodes, orderBy: 'createdAt DESC'),
+          AppDatabase.tableQrCodes: await db.query(AppDatabase.tableQrCodes,
+              orderBy: 'createdAt DESC'),
         };
       });
 

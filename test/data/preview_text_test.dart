@@ -102,7 +102,8 @@ void main() {
     test('save stores the preview alongside the body', () async {
       unwrap(await repo.save(noteWith(id: 'a', body: delta('stored line'))));
 
-      final raw = await (await db.open()).query('notes', columns: ['previewText']);
+      final raw =
+          await (await db.open()).query('notes', columns: ['previewText']);
       expect(raw.single['previewText'], 'stored line');
     });
 
@@ -194,7 +195,8 @@ void main() {
       addTearDown(appDb.close);
       final upgraded = await appDb.open();
 
-      final rows = await upgraded.query('notes', columns: ['id', 'previewText']);
+      final rows =
+          await upgraded.query('notes', columns: ['id', 'previewText']);
       final previews = {
         for (final row in rows) row['id']: row['previewText'],
       };

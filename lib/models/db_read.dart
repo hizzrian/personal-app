@@ -6,7 +6,8 @@
 class DbRead {
   const DbRead._();
 
-  static String string(Map<String, Object?> map, String key, {String fallback = ''}) {
+  static String string(Map<String, Object?> map, String key,
+      {String fallback = ''}) {
     final value = map[key];
     if (value == null) return fallback;
     if (value is String) return value;
@@ -21,7 +22,8 @@ class DbRead {
     return int.tryParse(value.toString()) ?? fallback;
   }
 
-  static bool boolean(Map<String, Object?> map, String key, {bool fallback = false}) {
+  static bool boolean(Map<String, Object?> map, String key,
+      {bool fallback = false}) {
     final value = map[key];
     if (value == null) return fallback;
     if (value is bool) return value;
@@ -32,7 +34,8 @@ class DbRead {
 
   /// Parses an ISO-8601 string. Falls back to [fallback] (or now) rather than
   /// throwing, so one corrupt row cannot take down an entire list screen.
-  static DateTime dateTime(Map<String, Object?> map, String key, {DateTime? fallback}) {
+  static DateTime dateTime(Map<String, Object?> map, String key,
+      {DateTime? fallback}) {
     final value = map[key];
     if (value is String) {
       final parsed = DateTime.tryParse(value);

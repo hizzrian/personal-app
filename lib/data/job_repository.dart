@@ -32,7 +32,8 @@ class SqliteJobRepository with RepositoryGuard implements JobRepository {
   Future<Result<List<Job>>> recent({int limit = 2}) =>
       guard('load recent applications', () async {
         final db = await _db.open();
-        final rows = await db.query(_table, orderBy: 'updatedAt DESC', limit: limit);
+        final rows =
+            await db.query(_table, orderBy: 'updatedAt DESC', limit: limit);
         return rows.map(Job.fromMap).toList();
       });
 
@@ -55,7 +56,8 @@ class SqliteJobRepository with RepositoryGuard implements JobRepository {
       });
 
   @override
-  Future<Result<void>> delete(String id) => guard('delete application', () async {
+  Future<Result<void>> delete(String id) =>
+      guard('delete application', () async {
         final db = await _db.open();
         await db.delete(_table, where: 'id = ?', whereArgs: [id]);
       });
