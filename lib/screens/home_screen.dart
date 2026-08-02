@@ -3,6 +3,7 @@ import '../utils/app_theme.dart';
 import 'dashboard/dashboard_screen.dart';
 import 'qr/qr_camera_screen.dart';
 import 'settings/settings_screen.dart';
+import '../utils/app_spacing.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -31,8 +32,14 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: colors.surface,
-          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 20, offset: const Offset(0, -4))],
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withValues(alpha: 0.04),
+                blurRadius: 20,
+                offset: const Offset(0, -4))
+          ],
+          borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(AppRadius.panel)),
         ),
         child: SafeArea(
           child: Padding(
@@ -68,18 +75,25 @@ class _HomeScreenState extends State<HomeScreen> {
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: EdgeInsets.symmetric(horizontal: isActive ? 20 : 16, vertical: 8),
+        padding:
+            EdgeInsets.symmetric(horizontal: isActive ? 20 : 16, vertical: 8),
         decoration: BoxDecoration(
           color: isActive ? AppTheme.primary : Colors.transparent,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(AppRadius.card),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 22, color: isActive ? AppTheme.onPrimary : colors.onSurfaceVariant),
+            Icon(icon,
+                size: 22,
+                color: isActive ? AppTheme.onPrimary : colors.onSurfaceVariant),
             if (isActive) ...[
               const SizedBox(width: 8),
-              Text(label, style: const TextStyle(color: AppTheme.onPrimary, fontSize: 13, fontWeight: FontWeight.w600)),
+              Text(label,
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        color: AppTheme.onPrimary,
+                        fontWeight: FontWeight.w600,
+                      )),
             ],
           ],
         ),

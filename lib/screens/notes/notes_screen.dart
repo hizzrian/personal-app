@@ -11,6 +11,7 @@ import '../../widgets/group_card.dart';
 import '../../widgets/large_title_bar.dart';
 import '../../widgets/sliver_group_card.dart';
 import 'note_editor_screen.dart';
+import '../../utils/app_spacing.dart';
 
 class NotesScreen extends StatefulWidget {
   const NotesScreen({super.key});
@@ -79,7 +80,8 @@ class _NotesScreenState extends State<NotesScreen> {
   }
 
   Future<void> _togglePin(Note note) async {
-    final result = await context.notes.setPinned(note.id, pinned: !note.isPinned);
+    final result =
+        await context.notes.setPinned(note.id, pinned: !note.isPinned);
     if (!mounted) return;
     if (result case Err(:final failure)) {
       _showFailure(failure);
@@ -113,13 +115,15 @@ class _NotesScreenState extends State<NotesScreen> {
             actions: [
               IconButton(
                 onPressed: _openEditor,
-                icon: Icon(Icons.add_circle_rounded, color: colors.primary, size: 28),
+                icon: Icon(Icons.add_circle_rounded,
+                    color: colors.primary, size: 28),
               ),
               const SizedBox(width: 8),
             ],
           ),
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+            padding: const EdgeInsets.fromLTRB(
+                AppSpacing.page, 0, AppSpacing.page, 12),
             sliver: SliverToBoxAdapter(child: _buildSearchField(colors)),
           ),
           ..._buildBody(),
@@ -131,7 +135,7 @@ class _NotesScreenState extends State<NotesScreen> {
   Widget _buildSearchField(ColorScheme colors) {
     return TextField(
       controller: _searchController,
-      style: const TextStyle(fontSize: 14),
+      style: Theme.of(context).textTheme.bodyMedium,
       decoration: InputDecoration(
         hintText: 'Search',
         prefixIcon: Icon(Icons.search, color: colors.outline, size: 20),
@@ -145,7 +149,8 @@ class _NotesScreenState extends State<NotesScreen> {
                     _applyFilter();
                   });
                 },
-                child: Icon(Icons.close_rounded, color: colors.outline, size: 18),
+                child:
+                    Icon(Icons.close_rounded, color: colors.outline, size: 18),
               ),
         isDense: true,
         contentPadding: const EdgeInsets.symmetric(vertical: 10),
@@ -204,23 +209,31 @@ class _NotesScreenState extends State<NotesScreen> {
 
   Widget _buildLabel(String text) {
     return SliverPadding(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 6),
+      padding:
+          const EdgeInsets.fromLTRB(AppSpacing.page, 0, AppSpacing.page, 6),
       sliver: SliverToBoxAdapter(child: GroupLabel(text)),
     );
   }
 
   Widget _buildEmpty() {
-    final colors = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     return SliverFillRemaining(
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.note_alt_outlined, size: 40, color: colors.outlineVariant),
+            Icon(Icons.note_alt_outlined,
+                size: 40, color: colors.outlineVariant),
             const SizedBox(height: 10),
             Text(
               _query.isNotEmpty ? 'No results' : 'No notes yet',
-              style: TextStyle(fontSize: 15, color: colors.onSurfaceVariant),
+              style: theme.textTheme.titleSmall!.copyWith(
+                // The empty-state message reads as prose, not as a row title,
+                // so it drops the slot's medium weight.
+                fontWeight: FontWeight.w400,
+                color: colors.onSurfaceVariant,
+              ),
             ),
           ],
         ),
@@ -230,7 +243,7 @@ class _NotesScreenState extends State<NotesScreen> {
 
   Widget _buildGroup(List<_NoteEntry> entries) {
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.page),
       sliver: SliverGroupCard(
         itemCount: entries.length,
         itemBuilder: (context, i) => _NoteRow(
@@ -248,8 +261,7 @@ class _NotesScreenState extends State<NotesScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete note?',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+        title: Text('Delete note?', style: Theme.of(ctx).textTheme.titleMedium),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -257,7 +269,8 @@ class _NotesScreenState extends State<NotesScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Delete', style: TextStyle(color: AppTheme.error)),
+            child:
+                const Text('Delete', style: TextStyle(color: AppTheme.error)),
           ),
         ],
       ),
@@ -311,7 +324,8 @@ class _NoteRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     final note = entry.note;
 
     return Dismissible(
@@ -339,7 +353,8 @@ class _NoteRow extends StatelessWidget {
               if (note.isPinned)
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
-                  child: Icon(Icons.push_pin_rounded, size: 12, color: colors.primary),
+                  child: Icon(Icons.push_pin_rounded,
+                      size: 12, color: colors.primary),
                 ),
               Expanded(
                 child: Column(
@@ -349,9 +364,7 @@ class _NoteRow extends StatelessWidget {
                       note.title.isNotEmpty ? note.title : 'Untitled',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
+                      style: theme.textTheme.titleSmall!.copyWith(
                         color: note.title.isNotEmpty
                             ? colors.onSurface
                             : colors.outline,
@@ -363,7 +376,8 @@ class _NoteRow extends StatelessWidget {
                         entry.preview,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 13, color: colors.onSurfaceVariant),
+                        style: theme.textTheme.bodySmall!
+                            .copyWith(color: colors.onSurfaceVariant),
                       ),
                     ],
                     if (note.tags.isNotEmpty) ...[
@@ -372,8 +386,7 @@ class _NoteRow extends StatelessWidget {
                         note.tags.map((t) => '#$t').join('  '),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 11,
+                        style: theme.textTheme.labelSmall!.copyWith(
                           color: colors.primary.withValues(alpha: 0.7),
                         ),
                       ),
@@ -384,10 +397,12 @@ class _NoteRow extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 RelativeTime.short(note.updatedAt),
-                style: TextStyle(fontSize: 11, color: colors.outline),
+                style:
+                    theme.textTheme.labelSmall!.copyWith(color: colors.outline),
               ),
               const SizedBox(width: 4),
-              Icon(Icons.chevron_right_rounded, size: 16, color: colors.outlineVariant),
+              Icon(Icons.chevron_right_rounded,
+                  size: 16, color: colors.outlineVariant),
             ],
           ),
         ),

@@ -35,11 +35,9 @@ class LargeTitleBar extends StatelessWidget {
         expandedTitleScale: expandedTitleScale,
         title: Text(
           title,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: titleColor ?? colors.onSurface,
-          ),
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                color: titleColor ?? colors.onSurface,
+              ),
         ),
       ),
       actions: actions,

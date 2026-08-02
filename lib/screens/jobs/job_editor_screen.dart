@@ -6,6 +6,7 @@ import '../../core/dependencies.dart';
 import '../../core/result.dart';
 import '../../models/job.dart';
 import '../../models/job_status.dart';
+import '../../utils/app_spacing.dart';
 
 class JobEditorScreen extends StatefulWidget {
   final Job? job;
@@ -32,8 +33,10 @@ class _JobEditorScreenState extends State<JobEditorScreen> {
   void initState() {
     super.initState();
     _companyController = TextEditingController(text: widget.job?.company ?? '');
-    _positionController = TextEditingController(text: widget.job?.position ?? '');
-    _locationController = TextEditingController(text: widget.job?.location ?? '');
+    _positionController =
+        TextEditingController(text: widget.job?.position ?? '');
+    _locationController =
+        TextEditingController(text: widget.job?.location ?? '');
     _salaryController = TextEditingController(text: widget.job?.salary ?? '');
     _notesController = TextEditingController(text: widget.job?.notes ?? '');
     _status = widget.job?.status ?? JobStatus.applied;
@@ -117,7 +120,8 @@ class _JobEditorScreenState extends State<JobEditorScreen> {
             onPressed: _save,
             child: Text(
               'Save',
-              style: TextStyle(color: colors.primary, fontWeight: FontWeight.w600),
+              style:
+                  TextStyle(color: colors.primary, fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -136,7 +140,8 @@ class _JobEditorScreenState extends State<JobEditorScreen> {
             spacing: 6,
             runSpacing: 6,
             children: [
-              for (final status in JobStatus.values) _statusChip(status, colors),
+              for (final status in JobStatus.values)
+                _statusChip(status, colors),
             ],
           ),
           const SizedBox(height: 20),
@@ -148,16 +153,20 @@ class _JobEditorScreenState extends State<JobEditorScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
                 color: colors.surfaceContainerLow,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(AppRadius.control),
               ),
               child: Text(
                 _dateFormat.format(_appliedDate),
-                style: TextStyle(color: colors.onSurface, fontSize: 14),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .copyWith(color: colors.onSurface),
               ),
             ),
           ),
           const SizedBox(height: 20),
-          _field('Notes', _notesController, 'Any additional info...', maxLines: 3),
+          _field('Notes', _notesController, 'Any additional info...',
+              maxLines: 3),
         ],
       ),
     );
@@ -172,19 +181,20 @@ class _JobEditorScreenState extends State<JobEditorScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected ? statusColor.withValues(alpha: 0.15) : Colors.transparent,
-          borderRadius: BorderRadius.circular(6),
+          color: isSelected
+              ? statusColor.withValues(alpha: 0.15)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(AppRadius.badge),
           border: Border.all(
             color: isSelected ? statusColor : colors.outlineVariant,
           ),
         ),
         child: Text(
           status.label,
-          style: TextStyle(
-            fontSize: 12,
-            color: isSelected ? statusColor : colors.onSurfaceVariant,
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-          ),
+          style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                color: isSelected ? statusColor : colors.onSurfaceVariant,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+              ),
         ),
       ),
     );
@@ -194,11 +204,10 @@ class _JobEditorScreenState extends State<JobEditorScreen> {
     final colors = Theme.of(context).colorScheme;
     return Text(
       text,
-      style: TextStyle(
-        fontSize: 12,
-        color: colors.outline,
-        fontWeight: FontWeight.w500,
-      ),
+      style: Theme.of(context).textTheme.labelMedium!.copyWith(
+            color: colors.outline,
+            fontWeight: FontWeight.w500,
+          ),
     );
   }
 
@@ -218,7 +227,7 @@ class _JobEditorScreenState extends State<JobEditorScreen> {
           TextField(
             controller: controller,
             maxLines: maxLines,
-            style: const TextStyle(fontSize: 14),
+            style: Theme.of(context).textTheme.bodyMedium,
             decoration: InputDecoration(hintText: hint),
           ),
         ],

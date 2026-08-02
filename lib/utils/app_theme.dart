@@ -1,6 +1,114 @@
 import 'package:flutter/material.dart';
 
+import 'app_spacing.dart';
+
 class AppTheme {
+  /// The app's type scale, shared by both brightnesses.
+  ///
+  /// Sizes were hand-typed at roughly ninety call sites, so the same visual
+  /// role could drift a point between screens. Each slot below is one role.
+  ///
+  /// Colours are deliberately absent: [ThemeData] paints them from the colour
+  /// scheme per brightness, and call sites that want something else layer it on
+  /// with `copyWith`.
+  ///
+  /// Every slot repeats [_tracking] and [_lineHeight] rather than accepting
+  /// Material's per-slot values, which range from 0.0 to 0.5 letter spacing.
+  /// Before this scale existed each `Text` carried a bare `TextStyle`, so it
+  /// inherited `bodyMedium`'s metrics and overrode only the size, weight and
+  /// colour — meaning the whole app was already set at one tracking. Taking
+  /// Material's spread instead would have retuned every screen's spacing as a
+  /// side effect of a refactor. Changing that is a design decision, not a
+  /// cleanup, so it is left for its own change.
+  ///
+  /// Weights are likewise explicit: Material defaults `labelMedium` and
+  /// `labelSmall` to w500, which would have quietly thickened every timestamp
+  /// and tag in the app.
+  static const double _tracking = 0.25;
+  static const double _lineHeight = 1.43;
+
+  static const TextTheme _textTheme = TextTheme(
+    /// The note title field.
+    headlineLarge: TextStyle(
+      fontSize: 26,
+      fontWeight: FontWeight.w700,
+      letterSpacing: _tracking,
+      height: _lineHeight,
+    ),
+
+    /// A screen's opening line — the dashboard greeting, the scanner wordmark.
+    headlineMedium: TextStyle(
+      fontSize: 22,
+      fontWeight: FontWeight.w700,
+      letterSpacing: _tracking,
+      height: _lineHeight,
+    ),
+
+    /// App bar titles and the large numbers in a stat row.
+    headlineSmall: TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.w700,
+      letterSpacing: _tracking,
+      height: _lineHeight,
+    ),
+
+    /// A collapsing large title, and the wordmark beside it.
+    titleLarge: TextStyle(
+      fontSize: 18,
+      fontWeight: FontWeight.w700,
+      letterSpacing: _tracking,
+      height: _lineHeight,
+    ),
+
+    /// Dialog titles and section headers.
+    titleMedium: TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+      letterSpacing: _tracking,
+      height: _lineHeight,
+    ),
+
+    /// The leading line of a list row.
+    titleSmall: TextStyle(
+      fontSize: 15,
+      fontWeight: FontWeight.w500,
+      letterSpacing: _tracking,
+      height: _lineHeight,
+    ),
+
+    /// Reading text, input contents, button labels.
+    bodyMedium: TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w400,
+      letterSpacing: _tracking,
+      height: _lineHeight,
+    ),
+
+    /// Supporting text under a title: note previews, snack bars, field values.
+    bodySmall: TextStyle(
+      fontSize: 13,
+      fontWeight: FontWeight.w400,
+      letterSpacing: _tracking,
+      height: _lineHeight,
+    ),
+
+    /// Chips, filter pills, row subtitles.
+    labelMedium: TextStyle(
+      fontSize: 12,
+      fontWeight: FontWeight.w400,
+      letterSpacing: _tracking,
+      height: _lineHeight,
+    ),
+
+    /// Timestamps, tags, and the uppercase label above a group.
+    labelSmall: TextStyle(
+      fontSize: 11,
+      fontWeight: FontWeight.w400,
+      letterSpacing: _tracking,
+      height: _lineHeight,
+    ),
+  );
+
   // Shared colors
   static const Color primary = Color(0xFF4F46E5);
   static const Color primaryDark = Color(0xFF3525CD);
@@ -45,6 +153,7 @@ class AppTheme {
       primaryColor: primary,
       scaffoldBackgroundColor: background,
       fontFamily: 'Inter',
+      textTheme: _textTheme,
       colorScheme: const ColorScheme.light(
         primary: primary,
         primaryContainer: primaryContainer,
@@ -61,56 +170,86 @@ class AppTheme {
         scrolledUnderElevation: 1,
         surfaceTintColor: Colors.transparent,
         centerTitle: false,
-        titleTextStyle: TextStyle(fontFamily: 'Inter', color: primary, fontSize: 20, fontWeight: FontWeight.w700),
+        titleTextStyle: TextStyle(
+            fontFamily: 'Inter',
+            color: primary,
+            fontSize: 20,
+            fontWeight: FontWeight.w700),
         iconTheme: IconThemeData(color: onSurfaceVariant),
       ),
       cardTheme: CardThemeData(
         color: surface,
         elevation: 0,
         margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16), side: const BorderSide(color: Color(0xFFF3F4F6))),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.panel),
+            side: const BorderSide(color: Color(0xFFF3F4F6))),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: primary,
         foregroundColor: onPrimary,
         elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.panel)),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: surfaceContainerLow,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: primary, width: 1.5)),
-        hintStyle: const TextStyle(color: outline, fontSize: 14, fontFamily: 'Inter'),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppRadius.field),
+            borderSide: BorderSide.none),
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppRadius.field),
+            borderSide: BorderSide.none),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppRadius.field),
+            borderSide: const BorderSide(color: primary, width: 1.5)),
+        hintStyle:
+            const TextStyle(color: outline, fontSize: 14, fontFamily: 'Inter'),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: primary,
           foregroundColor: onPrimary,
           elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.field)),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14, fontFamily: 'Inter'),
+          textStyle: const TextStyle(
+              fontWeight: FontWeight.w600, fontSize: 14, fontFamily: 'Inter'),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(foregroundColor: primary, textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, fontFamily: 'Inter')),
+        style: TextButton.styleFrom(
+            foregroundColor: primary,
+            textStyle: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                fontFamily: 'Inter')),
       ),
       chipTheme: ChipThemeData(
         backgroundColor: surfaceContainerLow,
         selectedColor: primaryContainer,
-        labelStyle: const TextStyle(color: onSurfaceVariant, fontSize: 12, fontFamily: 'Inter'),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        labelStyle: const TextStyle(
+            color: onSurfaceVariant, fontSize: 12, fontFamily: 'Inter'),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.control)),
         side: BorderSide(color: outlineVariant.withValues(alpha: 0.3)),
       ),
-      dividerTheme: const DividerThemeData(color: Color(0xFFF3F4F6), thickness: 1, space: 0),
-      dialogTheme: DialogThemeData(backgroundColor: surface, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
+      dividerTheme: const DividerThemeData(
+          color: Color(0xFFF3F4F6), thickness: 1, space: 0),
+      dialogTheme: DialogThemeData(
+          backgroundColor: surface,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.panel))),
       snackBarTheme: SnackBarThemeData(
         backgroundColor: onSurface,
-        contentTextStyle: const TextStyle(color: surface, fontSize: 13, fontFamily: 'Inter'),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        contentTextStyle:
+            const TextStyle(color: surface, fontSize: 13, fontFamily: 'Inter'),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.floating)),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -122,6 +261,7 @@ class AppTheme {
       primaryColor: primary,
       scaffoldBackgroundColor: backgroundDark,
       fontFamily: 'Inter',
+      textTheme: _textTheme,
       colorScheme: const ColorScheme.dark(
         primary: primary,
         primaryContainer: primaryContainerDark,
@@ -138,56 +278,86 @@ class AppTheme {
         scrolledUnderElevation: 0,
         surfaceTintColor: Colors.transparent,
         centerTitle: false,
-        titleTextStyle: TextStyle(fontFamily: 'Inter', color: primary, fontSize: 20, fontWeight: FontWeight.w700),
+        titleTextStyle: TextStyle(
+            fontFamily: 'Inter',
+            color: primary,
+            fontSize: 20,
+            fontWeight: FontWeight.w700),
         iconTheme: IconThemeData(color: onSurfaceVariantDark),
       ),
       cardTheme: CardThemeData(
         color: surfaceDark,
         elevation: 0,
         margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16), side: const BorderSide(color: outlineVariantDark)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.panel),
+            side: const BorderSide(color: outlineVariantDark)),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: primary,
         foregroundColor: onPrimary,
         elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.panel)),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: surfaceContainerLowDark,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: primary, width: 1.5)),
-        hintStyle: const TextStyle(color: outlineDark, fontSize: 14, fontFamily: 'Inter'),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppRadius.field),
+            borderSide: BorderSide.none),
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppRadius.field),
+            borderSide: BorderSide.none),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppRadius.field),
+            borderSide: const BorderSide(color: primary, width: 1.5)),
+        hintStyle: const TextStyle(
+            color: outlineDark, fontSize: 14, fontFamily: 'Inter'),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: primary,
           foregroundColor: onPrimary,
           elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.field)),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14, fontFamily: 'Inter'),
+          textStyle: const TextStyle(
+              fontWeight: FontWeight.w600, fontSize: 14, fontFamily: 'Inter'),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(foregroundColor: primary, textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, fontFamily: 'Inter')),
+        style: TextButton.styleFrom(
+            foregroundColor: primary,
+            textStyle: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                fontFamily: 'Inter')),
       ),
       chipTheme: ChipThemeData(
         backgroundColor: surfaceContainerLowDark,
         selectedColor: primaryContainerDark,
-        labelStyle: const TextStyle(color: onSurfaceVariantDark, fontSize: 12, fontFamily: 'Inter'),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        labelStyle: const TextStyle(
+            color: onSurfaceVariantDark, fontSize: 12, fontFamily: 'Inter'),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.control)),
         side: const BorderSide(color: outlineVariantDark),
       ),
-      dividerTheme: const DividerThemeData(color: outlineVariantDark, thickness: 1, space: 0),
-      dialogTheme: DialogThemeData(backgroundColor: surfaceDark, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
+      dividerTheme: const DividerThemeData(
+          color: outlineVariantDark, thickness: 1, space: 0),
+      dialogTheme: DialogThemeData(
+          backgroundColor: surfaceDark,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.panel))),
       snackBarTheme: SnackBarThemeData(
         backgroundColor: onSurfaceDark,
-        contentTextStyle: const TextStyle(color: surfaceDark, fontSize: 13, fontFamily: 'Inter'),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        contentTextStyle: const TextStyle(
+            color: surfaceDark, fontSize: 13, fontFamily: 'Inter'),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.floating)),
         behavior: SnackBarBehavior.floating,
       ),
     );

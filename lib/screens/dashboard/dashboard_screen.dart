@@ -12,6 +12,7 @@ import '../jobs/jobs_screen.dart';
 import '../notes/note_editor_screen.dart';
 import '../notes/notes_screen.dart';
 import '../qr/qr_saved_tab.dart';
+import '../../utils/app_spacing.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -75,7 +76,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
 
     return Scaffold(
       body: RefreshIndicator(
@@ -106,13 +108,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ],
             ),
             SliverPadding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
+              padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.page, 0, AppSpacing.page, 40),
               sliver: SliverList.list(
                 children: [
                   Text(
                     '${_greeting()}.',
-                    style: TextStyle(
-                      fontSize: 22,
+                    style: theme.textTheme.headlineMedium!.copyWith(
                       fontWeight: FontWeight.w600,
                       color: colors.onSurface,
                       letterSpacing: -0.3,
@@ -121,8 +123,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   const SizedBox(height: 4),
                   Text(
                     _summary(),
-                    style: TextStyle(
-                      fontSize: 14,
+                    style: theme.textTheme.bodyMedium!.copyWith(
                       color: colors.onSurfaceVariant,
                       height: 1.5,
                     ),
@@ -173,13 +174,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _sectionHeader(String title, String trailing, VoidCallback onTap) {
-    final colors = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     return Row(
       children: [
         Text(
           title,
-          style: TextStyle(
-            fontSize: 15,
+          style: theme.textTheme.titleSmall!.copyWith(
             fontWeight: FontWeight.w600,
             color: colors.onSurface,
           ),
@@ -190,7 +191,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: Row(
             children: [
               Text(trailing,
-                  style: TextStyle(fontSize: 12, color: colors.onSurfaceVariant)),
+                  style: theme.textTheme.labelMedium!
+                      .copyWith(color: colors.onSurfaceVariant)),
               const SizedBox(width: 2),
               Icon(Icons.chevron_right_rounded,
                   size: 16, color: colors.onSurfaceVariant),
@@ -231,7 +233,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildNotesGroup() {
-    final colors = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
 
     if (_recentNotes.isEmpty) {
       return GroupCard(
@@ -241,7 +244,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Center(
               child: Text(
                 'No notes yet. Tap "New Note" to start.',
-                style: TextStyle(fontSize: 13, color: colors.onSurfaceVariant),
+                style: theme.textTheme.bodySmall!
+                    .copyWith(color: colors.onSurfaceVariant),
               ),
             ),
           ),
@@ -265,7 +269,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildJobsGroup() {
-    final colors = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
 
     if (_recentJobs.isEmpty) {
       return GroupCard(
@@ -275,7 +280,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Center(
               child: Text(
                 'No applications yet. Tap "Add Job" to start.',
-                style: TextStyle(fontSize: 13, color: colors.onSurfaceVariant),
+                style: theme.textTheme.bodySmall!
+                    .copyWith(color: colors.onSurfaceVariant),
               ),
             ),
           ),
@@ -321,7 +327,8 @@ class _QuickAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
 
     return Expanded(
       child: GestureDetector(
@@ -330,8 +337,9 @@ class _QuickAction extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
             color: colors.surface,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: colors.outlineVariant.withValues(alpha: 0.3)),
+            borderRadius: BorderRadius.circular(AppRadius.field),
+            border:
+                Border.all(color: colors.outlineVariant.withValues(alpha: 0.3)),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -342,8 +350,7 @@ class _QuickAction extends StatelessWidget {
                 child: Text(
                   label,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 12,
+                  style: theme.textTheme.labelMedium!.copyWith(
                     fontWeight: FontWeight.w500,
                     color: colors.onSurface,
                   ),
@@ -365,7 +372,8 @@ class _NoteTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     final note = preview.note;
 
     return InkWell(
@@ -382,11 +390,8 @@ class _NoteTile extends StatelessWidget {
                     note.title.isNotEmpty ? note.title : 'Untitled',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      color: colors.onSurface,
-                    ),
+                    style: theme.textTheme.titleSmall!
+                        .copyWith(color: colors.onSurface),
                   ),
                   if (preview.preview.isNotEmpty) ...[
                     const SizedBox(height: 3),
@@ -394,7 +399,8 @@ class _NoteTile extends StatelessWidget {
                       preview.preview,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 13, color: colors.onSurfaceVariant),
+                      style: theme.textTheme.bodySmall!
+                          .copyWith(color: colors.onSurfaceVariant),
                     ),
                   ],
                 ],
@@ -403,7 +409,8 @@ class _NoteTile extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               RelativeTime.short(note.updatedAt),
-              style: TextStyle(fontSize: 11, color: colors.outline),
+              style:
+                  theme.textTheme.labelSmall!.copyWith(color: colors.outline),
             ),
             const SizedBox(width: 4),
             Icon(Icons.chevron_right_rounded,
@@ -423,7 +430,8 @@ class _JobTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     final statusColor = Color(job.status.colorValue);
 
     return InkWell(
@@ -436,7 +444,8 @@ class _JobTile extends StatelessWidget {
               width: 8,
               height: 8,
               margin: const EdgeInsets.only(right: 12),
-              decoration: BoxDecoration(color: statusColor, shape: BoxShape.circle),
+              decoration:
+                  BoxDecoration(color: statusColor, shape: BoxShape.circle),
             ),
             Expanded(
               child: Column(
@@ -446,11 +455,8 @@ class _JobTile extends StatelessWidget {
                     job.position,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      color: colors.onSurface,
-                    ),
+                    style: theme.textTheme.titleSmall!
+                        .copyWith(color: colors.onSurface),
                   ),
                   const SizedBox(height: 2),
                   Text(
@@ -459,7 +465,8 @@ class _JobTile extends StatelessWidget {
                         : '${job.company} · ${job.location}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 12, color: colors.onSurfaceVariant),
+                    style: theme.textTheme.labelMedium!
+                        .copyWith(color: colors.onSurfaceVariant),
                   ),
                 ],
               ),
@@ -468,12 +475,11 @@ class _JobTile extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 color: statusColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(AppRadius.badge),
               ),
               child: Text(
                 job.status.label,
-                style: TextStyle(
-                  fontSize: 11,
+                style: theme.textTheme.labelSmall!.copyWith(
                   fontWeight: FontWeight.w600,
                   color: statusColor,
                 ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/app_spacing.dart';
 
 class StatusBadge extends StatelessWidget {
   final String label;
@@ -18,7 +19,7 @@ class StatusBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(AppRadius.control),
         border: Border.all(color: color.withValues(alpha: 0.4)),
       ),
       child: Text(

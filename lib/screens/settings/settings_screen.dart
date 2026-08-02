@@ -8,6 +8,7 @@ import '../../state/theme_controller.dart';
 import '../../utils/app_theme.dart';
 import '../../widgets/group_card.dart';
 import '../../widgets/large_title_bar.dart';
+import '../../utils/app_spacing.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -29,7 +30,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         slivers: [
           const LargeTitleBar(title: 'Settings'),
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
+            padding: const EdgeInsets.fromLTRB(
+                AppSpacing.page, 0, AppSpacing.page, 40),
             sliver: SliverList.list(
               children: [
                 const GroupLabel('Appearance'),
@@ -46,7 +48,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ],
                 ),
                 const SizedBox(height: 28),
-
                 const GroupLabel('Data'),
                 const SizedBox(height: 8),
                 GroupCard(
@@ -77,7 +78,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ],
                 ),
                 const SizedBox(height: 28),
-
                 const GroupLabel('About'),
                 const SizedBox(height: 8),
                 const GroupCard(
@@ -175,11 +175,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(title,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+        title: Text(title, style: Theme.of(ctx).textTheme.titleMedium),
         content: Text(
           message,
-          style: TextStyle(fontSize: 14, color: colors.onSurfaceVariant),
+          style: Theme.of(ctx)
+              .textTheme
+              .bodyMedium!
+              .copyWith(color: colors.onSurfaceVariant),
         ),
         actions: [
           TextButton(
@@ -190,7 +192,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(
               confirmLabel,
-              style: TextStyle(color: confirmColor, fontWeight: FontWeight.w600),
+              style:
+                  TextStyle(color: confirmColor, fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -201,7 +204,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _showFailure(Failure failure) => _showMessage(failure.message);
 
   void _showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 }
 
@@ -229,7 +233,10 @@ class _ToggleRow extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: Text(title,
-                style: TextStyle(fontSize: 15, color: colors.onSurface)),
+                style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                      fontWeight: FontWeight.w400,
+                      color: colors.onSurface,
+                    )),
           ),
           Switch.adaptive(
             value: value,
@@ -278,14 +285,18 @@ class _ActionRow extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: isDestructive ? AppTheme.error : colors.onSurface,
-                    ),
+                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                          fontWeight: FontWeight.w400,
+                          color:
+                              isDestructive ? AppTheme.error : colors.onSurface,
+                        ),
                   ),
                   Text(
                     subtitle,
-                    style: TextStyle(fontSize: 12, color: colors.outline),
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelMedium!
+                        .copyWith(color: colors.outline),
                   ),
                 ],
               ),
@@ -331,9 +342,16 @@ class _InfoRow extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: Text(title,
-                style: TextStyle(fontSize: 15, color: colors.onSurface)),
+                style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                      fontWeight: FontWeight.w400,
+                      color: colors.onSurface,
+                    )),
           ),
-          Text(value, style: TextStyle(fontSize: 13, color: colors.outline)),
+          Text(value,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall!
+                  .copyWith(color: colors.outline)),
         ],
       ),
     );

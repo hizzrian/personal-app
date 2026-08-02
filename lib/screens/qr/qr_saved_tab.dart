@@ -9,6 +9,7 @@ import '../../utils/app_theme.dart';
 import '../../widgets/error_view.dart';
 import '../../widgets/group_card.dart';
 import 'qr_fullscreen_view.dart';
+import '../../utils/app_spacing.dart';
 
 class QrSavedTab extends StatefulWidget {
   const QrSavedTab({super.key});
@@ -85,9 +86,9 @@ class _QrSavedTabState extends State<QrSavedTab> {
       return await showDialog<_QrDraft>(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: const Text(
+          title: Text(
             'Save QR Code',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            style: Theme.of(ctx).textTheme.titleMedium,
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -95,7 +96,8 @@ class _QrSavedTabState extends State<QrSavedTab> {
               TextField(
                 controller: labelController,
                 autofocus: true,
-                decoration: const InputDecoration(hintText: 'Label (e.g. My WiFi)'),
+                decoration:
+                    const InputDecoration(hintText: 'Label (e.g. My WiFi)'),
               ),
               const SizedBox(height: 12),
               TextField(
@@ -119,7 +121,8 @@ class _QrSavedTabState extends State<QrSavedTab> {
                 if (label.isEmpty || data.isEmpty) return;
                 Navigator.pop(ctx, _QrDraft(label: label, data: data));
               },
-              child: const Text('Save', style: TextStyle(color: AppTheme.primary)),
+              child:
+                  const Text('Save', style: TextStyle(color: AppTheme.primary)),
             ),
           ],
         ),
@@ -131,7 +134,8 @@ class _QrSavedTabState extends State<QrSavedTab> {
   }
 
   void _showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -140,7 +144,8 @@ class _QrSavedTabState extends State<QrSavedTab> {
       children: [
         Expanded(child: _buildBody()),
         Padding(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+          padding: const EdgeInsets.fromLTRB(
+              AppSpacing.page, 0, AppSpacing.page, 20),
           child: SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
@@ -175,7 +180,8 @@ class _QrSavedTabState extends State<QrSavedTab> {
     if (_items.isEmpty) return _buildEmpty();
 
     return ListView(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+      padding:
+          const EdgeInsets.fromLTRB(AppSpacing.page, 0, AppSpacing.page, 20),
       children: [
         GroupCard(
           children: [
@@ -204,12 +210,18 @@ class _QrSavedTabState extends State<QrSavedTab> {
           const SizedBox(height: 12),
           Text(
             'No saved QR codes',
-            style: TextStyle(fontSize: 14, color: colors.onSurfaceVariant),
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium!
+                .copyWith(color: colors.onSurfaceVariant),
           ),
           const SizedBox(height: 4),
           Text(
             'Add one to show it quickly later',
-            style: TextStyle(fontSize: 12, color: colors.outline),
+            style: Theme.of(context)
+                .textTheme
+                .labelMedium!
+                .copyWith(color: colors.outline),
           ),
         ],
       ),
@@ -229,9 +241,9 @@ class _QrSavedTabState extends State<QrSavedTab> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text(
+        title: Text(
           'Delete QR code?',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          style: Theme.of(ctx).textTheme.titleMedium,
         ),
         actions: [
           TextButton(
@@ -240,7 +252,8 @@ class _QrSavedTabState extends State<QrSavedTab> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Delete', style: TextStyle(color: AppTheme.error)),
+            child:
+                const Text('Delete', style: TextStyle(color: AppTheme.error)),
           ),
         ],
       ),
@@ -298,7 +311,7 @@ class _QrRow extends StatelessWidget {
                 height: 40,
                 decoration: BoxDecoration(
                   color: colors.surfaceContainerLow,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(AppRadius.control),
                 ),
                 child: Icon(
                   Icons.qr_code_rounded,
@@ -315,18 +328,20 @@ class _QrRow extends StatelessWidget {
                       item.label,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: colors.onSurface,
-                      ),
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            fontWeight: FontWeight.w500,
+                            color: colors.onSurface,
+                          ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       item.data,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 12, color: colors.outline),
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelMedium!
+                          .copyWith(color: colors.outline),
                     ),
                   ],
                 ),

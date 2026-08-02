@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/app_spacing.dart';
+
 /// The iOS-style grouped inset container used by every list and settings
 /// section. Replaces five hand-rolled copies of the same BoxDecoration.
 class GroupCard extends StatelessWidget {
@@ -13,7 +15,9 @@ class GroupCard extends StatelessWidget {
   /// paint outside the bounds (e.g. a Dismissible background).
   final bool clip;
 
-  static const radius = 14.0;
+  /// Kept as an alias so SliverGroupCard and its goldens have one number
+  /// to agree on.
+  static const radius = AppRadius.card;
 
   @override
   Widget build(BuildContext context) {
@@ -79,12 +83,11 @@ class GroupLabel extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     return Text(
       text.toUpperCase(),
-      style: TextStyle(
-        fontSize: 11,
-        fontWeight: FontWeight.w600,
-        color: colors.outline,
-        letterSpacing: 0.5,
-      ),
+      style: Theme.of(context).textTheme.labelSmall!.copyWith(
+            fontWeight: FontWeight.w600,
+            color: colors.outline,
+            letterSpacing: 0.5,
+          ),
     );
   }
 }

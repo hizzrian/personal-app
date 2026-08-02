@@ -11,6 +11,7 @@ import '../../core/result.dart';
 import '../../models/qr_item.dart';
 import '../../utils/app_theme.dart';
 import 'qr_saved_tab.dart';
+import '../../utils/app_spacing.dart';
 
 class QrCameraScreen extends StatefulWidget {
   const QrCameraScreen({super.key});
@@ -79,7 +80,9 @@ class QrCameraScreenState extends State<QrCameraScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Theme.of(context).colorScheme.surface,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      shape: const RoundedRectangleBorder(
+          borderRadius:
+              BorderRadius.vertical(top: Radius.circular(AppRadius.pill))),
       builder: (ctx) => _ScanResultSheet(
         data: data,
         onSave: (label) => _saveToList(label, data),
@@ -122,7 +125,8 @@ class QrCameraScreenState extends State<QrCameraScreen> {
   }
 
   Future<void> _pickFromGallery() async {
-    final XFile? image = await _imagePicker.pickImage(source: ImageSource.gallery);
+    final XFile? image =
+        await _imagePicker.pickImage(source: ImageSource.gallery);
     if (image == null) return;
 
     final controller = _cameraController ?? MobileScannerController();
@@ -138,11 +142,13 @@ class QrCameraScreenState extends State<QrCameraScreen> {
         }
       }
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No QR code found in image')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('No QR code found in image')));
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error scanning image')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Error scanning image')));
       }
     } finally {
       if (needsDispose) unawaited(controller.dispose());
@@ -158,26 +164,34 @@ class QrCameraScreenState extends State<QrCameraScreen> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
+              padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.page, 16, AppSpacing.page, 12),
               child: Row(
                 children: [
                   Container(
-                    width: 40, height: 40,
-                    decoration: BoxDecoration(shape: BoxShape.circle, color: colors.primaryContainer),
-                    child: Icon(Icons.person_rounded, color: colors.primary, size: 20),
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle, color: colors.primaryContainer),
+                    child: Icon(Icons.person_rounded,
+                        color: colors.primary, size: 20),
                   ),
                   const SizedBox(width: 12),
-                  Text('Clarity', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: colors.primary)),
+                  Text('Clarity',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineMedium!
+                          .copyWith(color: colors.primary)),
                 ],
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.page),
               child: Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
                   color: colors.surfaceContainerLow,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(AppRadius.card),
                 ),
                 child: Row(
                   children: [
@@ -189,7 +203,8 @@ class QrCameraScreenState extends State<QrCameraScreen> {
             ),
             const SizedBox(height: 16),
             Expanded(
-              child: _tabIndex == 0 ? _buildScanView(colors) : const QrSavedTab(),
+              child:
+                  _tabIndex == 0 ? _buildScanView(colors) : const QrSavedTab(),
             ),
           ],
         ),
@@ -213,16 +228,16 @@ class QrCameraScreenState extends State<QrCameraScreen> {
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
             color: isSelected ? AppTheme.primary : Colors.transparent,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(AppRadius.floating),
           ),
           child: Text(
             label,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
-              color: isSelected ? AppTheme.onPrimary : colors.onSurfaceVariant,
-            ),
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color:
+                      isSelected ? AppTheme.onPrimary : colors.onSurfaceVariant,
+                ),
           ),
         ),
       ),
@@ -233,9 +248,9 @@ class QrCameraScreenState extends State<QrCameraScreen> {
     return Stack(
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.page),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(AppRadius.pill),
             child: _cameraController != null
                 ? MobileScanner(
                     controller: _cameraController!,
@@ -243,24 +258,29 @@ class QrCameraScreenState extends State<QrCameraScreen> {
                   )
                 : Container(
                     color: Colors.black,
-                    child: const Center(child: Icon(Icons.camera_alt, color: Colors.white38, size: 48)),
+                    child: const Center(
+                        child: Icon(Icons.camera_alt,
+                            color: Colors.white38, size: 48)),
                   ),
           ),
         ),
         Positioned.fill(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.page),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(AppRadius.pill),
               child: IgnorePointer(
                 child: Container(
                   color: Colors.black.withValues(alpha: 0.3),
                   child: Center(
                     child: Container(
-                      width: 220, height: 220,
+                      width: 220,
+                      height: 220,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: AppTheme.primary.withValues(alpha: 0.6), width: 2.5),
+                        borderRadius: BorderRadius.circular(AppRadius.frame),
+                        border: Border.all(
+                            color: AppTheme.primary.withValues(alpha: 0.6),
+                            width: 2.5),
                       ),
                     ),
                   ),
@@ -270,20 +290,36 @@ class QrCameraScreenState extends State<QrCameraScreen> {
           ),
         ),
         Positioned(
-          bottom: 0, left: 20, right: 20,
+          bottom: 0,
+          left: 20,
+          right: 20,
           child: Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: colors.surface,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 20, offset: const Offset(0, -4))],
+              borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(AppRadius.pill)),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.08),
+                    blurRadius: 20,
+                    offset: const Offset(0, -4))
+              ],
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Scan QR Code', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: colors.onSurface)),
+                Text('Scan QR Code',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium!
+                        .copyWith(color: colors.onSurface)),
                 const SizedBox(height: 4),
-                Text('Align the QR code within the frame', style: TextStyle(fontSize: 13, color: colors.onSurfaceVariant)),
+                Text('Align the QR code within the frame',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall!
+                        .copyWith(color: colors.onSurfaceVariant)),
                 const SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,
@@ -294,7 +330,8 @@ class QrCameraScreenState extends State<QrCameraScreen> {
                     style: OutlinedButton.styleFrom(
                       foregroundColor: colors.primary,
                       side: BorderSide(color: colors.outlineVariant),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(AppRadius.field)),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                   ),
@@ -324,7 +361,8 @@ class _ScanResultSheetState extends State<_ScanResultSheet> {
   @override
   void initState() {
     super.initState();
-    final preview = widget.data.length > 30 ? widget.data.substring(0, 30) : widget.data;
+    final preview =
+        widget.data.length > 30 ? widget.data.substring(0, 30) : widget.data;
     _labelController = TextEditingController(text: preview);
   }
 
@@ -338,30 +376,60 @@ class _ScanResultSheetState extends State<_ScanResultSheet> {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     return Padding(
-      padding: EdgeInsets.fromLTRB(20, 20, 20, MediaQuery.of(context).viewInsets.bottom + 20),
+      padding: EdgeInsets.fromLTRB(
+          20, 20, 20, MediaQuery.of(context).viewInsets.bottom + 20),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: colors.outlineVariant, borderRadius: BorderRadius.circular(2)))),
+          Center(
+              child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                      color: colors.outlineVariant,
+                      borderRadius: BorderRadius.circular(AppRadius.grabber)))),
           const SizedBox(height: 20),
           Row(
             children: [
-              Container(width: 8, height: 8, decoration: const BoxDecoration(color: AppTheme.success, shape: BoxShape.circle)),
+              Container(
+                  width: 8,
+                  height: 8,
+                  decoration: const BoxDecoration(
+                      color: AppTheme.success, shape: BoxShape.circle)),
               const SizedBox(width: 8),
-              const Text('QR Code Detected', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppTheme.success)),
+              Text('QR Code Detected',
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.success,
+                      )),
             ],
           ),
           const SizedBox(height: 14),
           Container(
-            width: double.infinity, padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(color: colors.surfaceContainerLow, borderRadius: BorderRadius.circular(10)),
-            child: Text(widget.data, style: TextStyle(fontSize: 13, color: colors.onSurface, fontFamily: 'monospace'), maxLines: 4, overflow: TextOverflow.ellipsis),
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+                color: colors.surfaceContainerLow,
+                borderRadius: BorderRadius.circular(AppRadius.floating)),
+            child: Text(widget.data,
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      color: colors.onSurface,
+                      fontFamily: 'monospace',
+                    ),
+                maxLines: 4,
+                overflow: TextOverflow.ellipsis),
           ),
           const SizedBox(height: 16),
-          Text('Label', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: colors.outline)),
+          Text('Label',
+              style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                    fontWeight: FontWeight.w500,
+                    color: colors.outline,
+                  )),
           const SizedBox(height: 6),
-          TextField(controller: _labelController, decoration: const InputDecoration(hintText: 'Name this QR code')),
+          TextField(
+              controller: _labelController,
+              decoration: const InputDecoration(hintText: 'Name this QR code')),
           const SizedBox(height: 16),
           Row(
             children: [
@@ -369,12 +437,15 @@ class _ScanResultSheetState extends State<_ScanResultSheet> {
                 child: OutlinedButton(
                   onPressed: () {
                     Clipboard.setData(ClipboardData(text: widget.data));
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Copied')));
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(const SnackBar(content: Text('Copied')));
                   },
                   style: OutlinedButton.styleFrom(
                     foregroundColor: colors.onSurfaceVariant,
                     side: BorderSide(color: colors.outlineVariant),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(AppRadius.floating)),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
                   child: const Text('Copy'),

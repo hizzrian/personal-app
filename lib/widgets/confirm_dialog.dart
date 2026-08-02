@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/app_theme.dart';
+import '../utils/app_spacing.dart';
 
 class ConfirmDialog extends StatelessWidget {
   final String title;
@@ -41,13 +42,24 @@ class ConfirmDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: AppTheme.surfaceContainerLow,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      title: Text(title, style: const TextStyle(color: AppTheme.onSurface, fontSize: 17)),
-      content: Text(message, style: const TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 14)),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.card)),
+      // Was a one-off 17px; folded into the dialog-title slot at 16.
+      title: Text(title,
+          style: Theme.of(context)
+              .textTheme
+              .titleMedium!
+              .copyWith(color: AppTheme.onSurface)),
+      content: Text(message,
+          style: Theme.of(context)
+              .textTheme
+              .bodyMedium!
+              .copyWith(color: AppTheme.onSurfaceVariant)),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
-          child: Text(cancelLabel, style: const TextStyle(color: AppTheme.onSurfaceVariant)),
+          child: Text(cancelLabel,
+              style: const TextStyle(color: AppTheme.onSurfaceVariant)),
         ),
         TextButton(
           onPressed: () => Navigator.pop(context, true),

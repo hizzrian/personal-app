@@ -29,21 +29,20 @@ class EmptyState extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               title,
-              style: const TextStyle(
-                color: AppTheme.onSurface,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium!
+                  .copyWith(color: AppTheme.onSurface),
               textAlign: TextAlign.center,
             ),
             if (subtitle.isNotEmpty) ...[
               const SizedBox(height: 6),
               Text(
                 subtitle,
-                style: const TextStyle(
-                  color: AppTheme.onSurfaceVariant,
-                  fontSize: 13,
-                ),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall!
+                    .copyWith(color: AppTheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
             ],

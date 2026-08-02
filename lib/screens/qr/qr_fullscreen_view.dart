@@ -13,7 +13,8 @@ class QrFullscreenView extends StatefulWidget {
 }
 
 class _QrFullscreenViewState extends State<QrFullscreenView> {
-  static const _brightnessChannel = MethodChannel('com.personal.personal_app/brightness');
+  static const _brightnessChannel =
+      MethodChannel('com.personal.personal_app/brightness');
   double? _previousBrightness;
 
   @override
@@ -30,8 +31,10 @@ class _QrFullscreenViewState extends State<QrFullscreenView> {
 
   Future<void> _setMaxBrightness() async {
     try {
-      _previousBrightness = await _brightnessChannel.invokeMethod('getBrightness');
-      await _brightnessChannel.invokeMethod('setBrightness', {'brightness': 1.0});
+      _previousBrightness =
+          await _brightnessChannel.invokeMethod('getBrightness');
+      await _brightnessChannel
+          .invokeMethod('setBrightness', {'brightness': 1.0});
     } catch (_) {
       // Fallback: just set system UI for white screen
     }
@@ -42,7 +45,8 @@ class _QrFullscreenViewState extends State<QrFullscreenView> {
   Future<void> _restoreBrightness() async {
     try {
       if (_previousBrightness != null) {
-        await _brightnessChannel.invokeMethod('setBrightness', {'brightness': _previousBrightness});
+        await _brightnessChannel
+            .invokeMethod('setBrightness', {'brightness': _previousBrightness});
       }
     } catch (_) {}
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
@@ -70,7 +74,8 @@ class _QrFullscreenViewState extends State<QrFullscreenView> {
                         color: Colors.black.withValues(alpha: 0.06),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.close, size: 20, color: Colors.black54),
+                      child: const Icon(Icons.close,
+                          size: 20, color: Colors.black54),
                     ),
                   ),
                 ),
@@ -95,11 +100,10 @@ class _QrFullscreenViewState extends State<QrFullscreenView> {
               const SizedBox(height: 24),
               Text(
                 widget.label,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
-                ),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium!
+                    .copyWith(color: Colors.black87),
               ),
               const SizedBox(height: 6),
               Padding(
@@ -107,17 +111,23 @@ class _QrFullscreenViewState extends State<QrFullscreenView> {
                 child: Text(
                   widget.data,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 12, color: Colors.black45),
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelMedium!
+                      .copyWith(color: Colors.black45),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
               const Spacer(),
-              const Padding(
-                padding: EdgeInsets.only(bottom: 40),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 40),
                 child: Text(
                   'Tap anywhere to close',
-                  style: TextStyle(fontSize: 12, color: Colors.black26),
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelMedium!
+                      .copyWith(color: Colors.black26),
                 ),
               ),
             ],

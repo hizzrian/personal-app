@@ -4,6 +4,7 @@ import 'package:personal_app/core/dependencies.dart';
 import 'package:personal_app/models/note.dart';
 import 'package:personal_app/screens/notes/notes_screen.dart';
 import 'package:personal_app/state/theme_controller.dart';
+import 'package:personal_app/utils/app_theme.dart';
 
 import '../support/fakes.dart';
 
@@ -21,7 +22,10 @@ void main() {
       qrRepository: FakeQrRepository(),
       backupRepository: FakeBackupRepository(),
       child: MaterialApp(
-        theme: ThemeData(brightness: dark ? Brightness.dark : Brightness.light),
+        // Uses the real theme: GroupLabel now reads its style from the
+        // type scale, so a bare ThemeData would test a combination the app
+        // never renders.
+        theme: dark ? AppTheme.darkTheme : AppTheme.lightTheme,
         home: const NotesScreen(),
       ),
     );
