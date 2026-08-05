@@ -6,6 +6,7 @@ import '../../models/job.dart';
 import '../../models/note.dart';
 import '../../utils/relative_time.dart';
 import '../../widgets/group_card.dart';
+import '../../widgets/status_badge.dart';
 import '../../widgets/large_title_bar.dart';
 import '../jobs/job_editor_screen.dart';
 import '../jobs/jobs_screen.dart';
@@ -471,20 +472,7 @@ class _JobTile extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: statusColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(AppRadius.badge),
-              ),
-              child: Text(
-                job.status.label,
-                style: theme.textTheme.labelSmall!.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: statusColor,
-                ),
-              ),
-            ),
+            StatusBadge(status: job.status),
             const SizedBox(width: 4),
             Icon(Icons.chevron_right_rounded,
                 size: 16, color: colors.outlineVariant),

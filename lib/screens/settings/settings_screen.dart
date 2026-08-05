@@ -6,6 +6,7 @@ import '../../core/failure.dart';
 import '../../core/result.dart';
 import '../../state/theme_controller.dart';
 import '../../utils/app_theme.dart';
+import '../../widgets/confirm_dialog.dart';
 import '../../widgets/group_card.dart';
 import '../../widgets/large_title_bar.dart';
 import '../../utils/app_spacing.dart';
@@ -120,14 +121,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _handleImport() async {
     // Captured before the dialog await, so context isn't used across the gap.
     final importService = context.importService;
-    final confirmed = await _confirm(
+    final confirmed = await ConfirmDialog.show(
+      context,
       title: 'Import from Clipboard',
       message: 'Copy your exported JSON to the clipboard first, then tap '
           'Import. Records that already exist are skipped.',
       confirmLabel: 'Import',
       confirmColor: AppTheme.primary,
     );
-    if (confirmed != true) return;
+    if (!confirmed) return;
 
     setState(() => _isImporting = true);
     final result = await importService.importFromClipboard();
@@ -148,56 +150,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _handleClear() async {
     final backup = context.backup;
-    final confirmed = await _confirm(
+    final confirmed = await ConfirmDialog.show(
+      context,
       title: 'Clear all data?',
       message: 'This permanently deletes all notes, applications, and QR '
           'codes. It cannot be undone.',
       confirmLabel: 'Clear All',
       confirmColor: AppTheme.error,
     );
-    if (confirmed != true) return;
+    if (!confirmed) return;
 
     final result = await backup.clearAll();
     if (!mounted) return;
     result.fold(
       onOk: (_) => _showMessage('All data cleared.'),
       onErr: _showFailure,
-    );
-  }
-
-  Future<bool?> _confirm({
-    required String title,
-    required String message,
-    required String confirmLabel,
-    required Color confirmColor,
-  }) {
-    final colors = Theme.of(context).colorScheme;
-    return showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(title, style: Theme.of(ctx).textTheme.titleMedium),
-        content: Text(
-          message,
-          style: Theme.of(ctx)
-              .textTheme
-              .bodyMedium!
-              .copyWith(color: colors.onSurfaceVariant),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(
-              confirmLabel,
-              style:
-                  TextStyle(color: confirmColor, fontWeight: FontWeight.w600),
-            ),
-          ),
-        ],
-      ),
     );
   }
 

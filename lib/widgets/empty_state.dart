@@ -1,60 +1,56 @@
 import 'package:flutter/material.dart';
-import '../utils/app_theme.dart';
 
+/// The centred icon-and-message shown when a list has nothing in it.
+///
+/// Reproduces what Notes and Applications already drew inline. The earlier
+/// version of this widget described a different, larger design that nothing
+/// used — a 64px icon against the 40px the screens actually draw — so it was
+/// brought to the app rather than the app to it.
 class EmptyState extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final String? actionLabel;
-  final VoidCallback? onAction;
-
   const EmptyState({
     super.key,
     required this.icon,
     required this.title,
-    this.subtitle = '',
-    this.actionLabel,
-    this.onAction,
+    this.subtitle,
   });
+
+  final IconData icon;
+  final String title;
+
+  /// A second, quieter line. Only the saved-QR list uses one.
+  final String? subtitle;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    final second = subtitle;
+
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 64, color: AppTheme.onSurfaceVariant),
-            const SizedBox(height: 16),
-            Text(
-              title,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium!
-                  .copyWith(color: AppTheme.onSurface),
-              textAlign: TextAlign.center,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 40, color: colors.outlineVariant),
+          const SizedBox(height: 10),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.titleSmall!.copyWith(
+              // Prose, not a row title, so without the slot's medium weight.
+              fontWeight: FontWeight.w400,
+              color: colors.onSurfaceVariant,
             ),
-            if (subtitle.isNotEmpty) ...[
-              const SizedBox(height: 6),
-              Text(
-                subtitle,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall!
-                    .copyWith(color: AppTheme.onSurfaceVariant),
-                textAlign: TextAlign.center,
-              ),
-            ],
-            if (actionLabel != null && onAction != null) ...[
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: onAction,
-                child: Text(actionLabel!),
-              ),
-            ],
+          ),
+          if (second != null) ...[
+            const SizedBox(height: 4),
+            Text(
+              second,
+              textAlign: TextAlign.center,
+              style:
+                  theme.textTheme.labelMedium!.copyWith(color: colors.outline),
+            ),
           ],
-        ),
+        ],
       ),
     );
   }

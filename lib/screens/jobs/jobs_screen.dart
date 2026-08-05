@@ -7,7 +7,10 @@ import '../../core/result.dart';
 import '../../models/job.dart';
 import '../../models/job_status.dart';
 import '../../utils/app_theme.dart';
+import '../../widgets/confirm_dialog.dart';
+import '../../widgets/empty_state.dart';
 import '../../widgets/error_view.dart';
+import '../../widgets/status_badge.dart';
 import '../../widgets/group_card.dart';
 import '../../widgets/large_title_bar.dart';
 import '../../widgets/sliver_group_card.dart';
@@ -220,28 +223,13 @@ class _JobsScreenState extends State<JobsScreen> {
     }
 
     if (_visible.isEmpty) {
-      final colors = Theme.of(context).colorScheme;
       return [
         SliverFillRemaining(
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.work_off_outlined,
-                    size: 40, color: colors.outlineVariant),
-                const SizedBox(height: 10),
-                Text(
-                  _filter == null
-                      ? 'No applications yet'
-                      : 'None with this status',
-                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                        // Prose, not a row title, so without the medium weight.
-                        fontWeight: FontWeight.w400,
-                        color: colors.onSurfaceVariant,
-                      ),
-                ),
-              ],
-            ),
+          child: EmptyState(
+            icon: Icons.work_off_outlined,
+            title: _filter == null
+                ? 'No applications yet'
+                : 'None with this status',
           ),
         ),
       ];
@@ -265,27 +253,11 @@ class _JobsScreenState extends State<JobsScreen> {
     ];
   }
 
-  Future<bool> _confirmDelete() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Remove application?',
-            style: Theme.of(ctx).textTheme.titleMedium),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child:
-                const Text('Remove', style: TextStyle(color: AppTheme.error)),
-          ),
-        ],
-      ),
-    );
-    return confirmed ?? false;
-  }
+  Future<bool> _confirmDelete() => ConfirmDialog.show(
+        context,
+        title: 'Remove application?',
+        confirmLabel: 'Remove',
+      );
 }
 
 class _Stat extends StatelessWidget {
@@ -398,20 +370,7 @@ class _JobRow extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: statusColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(AppRadius.badge),
-                ),
-                child: Text(
-                  job.status.label,
-                  style: theme.textTheme.labelSmall!.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: statusColor,
-                  ),
-                ),
-              ),
+              StatusBadge(status: job.status),
               const SizedBox(width: 4),
               Icon(Icons.chevron_right_rounded,
                   size: 16, color: colors.outlineVariant),

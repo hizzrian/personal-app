@@ -6,6 +6,8 @@ import '../../core/failure.dart';
 import '../../core/result.dart';
 import '../../models/qr_item.dart';
 import '../../utils/app_theme.dart';
+import '../../widgets/confirm_dialog.dart';
+import '../../widgets/empty_state.dart';
 import '../../widgets/error_view.dart';
 import '../../widgets/group_card.dart';
 import 'qr_fullscreen_view.dart';
@@ -201,30 +203,10 @@ class _QrSavedTabState extends State<QrSavedTab> {
   }
 
   Widget _buildEmpty() {
-    final colors = Theme.of(context).colorScheme;
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.qr_code_2_rounded, size: 40, color: colors.outlineVariant),
-          const SizedBox(height: 12),
-          Text(
-            'No saved QR codes',
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(color: colors.onSurfaceVariant),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'Add one to show it quickly later',
-            style: Theme.of(context)
-                .textTheme
-                .labelMedium!
-                .copyWith(color: colors.outline),
-          ),
-        ],
-      ),
+    return const EmptyState(
+      icon: Icons.qr_code_2_rounded,
+      title: 'No saved QR codes',
+      subtitle: 'Add one to show it quickly later',
     );
   }
 
@@ -237,29 +219,11 @@ class _QrSavedTabState extends State<QrSavedTab> {
     );
   }
 
-  Future<bool> _confirmDelete() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(
-          'Delete QR code?',
-          style: Theme.of(ctx).textTheme.titleMedium,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child:
-                const Text('Delete', style: TextStyle(color: AppTheme.error)),
-          ),
-        ],
-      ),
-    );
-    return confirmed ?? false;
-  }
+  Future<bool> _confirmDelete() => ConfirmDialog.show(
+        context,
+        title: 'Delete QR code?',
+        confirmLabel: 'Delete',
+      );
 }
 
 class _QrDraft {

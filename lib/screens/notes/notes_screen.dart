@@ -6,6 +6,8 @@ import '../../core/result.dart';
 import '../../models/note.dart';
 import '../../utils/app_theme.dart';
 import '../../utils/relative_time.dart';
+import '../../widgets/confirm_dialog.dart';
+import '../../widgets/empty_state.dart';
 import '../../widgets/error_view.dart';
 import '../../widgets/group_card.dart';
 import '../../widgets/large_title_bar.dart';
@@ -216,27 +218,10 @@ class _NotesScreenState extends State<NotesScreen> {
   }
 
   Widget _buildEmpty() {
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
     return SliverFillRemaining(
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.note_alt_outlined,
-                size: 40, color: colors.outlineVariant),
-            const SizedBox(height: 10),
-            Text(
-              _query.isNotEmpty ? 'No results' : 'No notes yet',
-              style: theme.textTheme.titleSmall!.copyWith(
-                // The empty-state message reads as prose, not as a row title,
-                // so it drops the slot's medium weight.
-                fontWeight: FontWeight.w400,
-                color: colors.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
+      child: EmptyState(
+        icon: Icons.note_alt_outlined,
+        title: _query.isNotEmpty ? 'No results' : 'No notes yet',
       ),
     );
   }
@@ -250,33 +235,18 @@ class _NotesScreenState extends State<NotesScreen> {
           entry: entries[i],
           onTap: () => _openEditor(note: entries[i].note),
           onTogglePin: () => _togglePin(entries[i].note),
-          onConfirmDelete: () => _confirmDelete(entries[i].note),
+          onConfirmDelete: _confirmDelete,
           onDeleted: () => _delete(entries[i].note),
         ),
       ),
     );
   }
 
-  Future<bool> _confirmDelete(Note note) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Delete note?', style: Theme.of(ctx).textTheme.titleMedium),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child:
-                const Text('Delete', style: TextStyle(color: AppTheme.error)),
-          ),
-        ],
-      ),
-    );
-    return confirmed ?? false;
-  }
+  Future<bool> _confirmDelete() => ConfirmDialog.show(
+        context,
+        title: 'Delete note?',
+        confirmLabel: 'Delete',
+      );
 }
 
 /// A note plus its derived display fields, computed once per load.
